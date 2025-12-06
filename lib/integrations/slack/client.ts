@@ -16,6 +16,11 @@ export class SlackClient {
     this.clientId = process.env.SLACK_CLIENT_ID as string;
     this.clientSecret = process.env.SLACK_CLIENT_SECRET as string;
 
+    // Only validate when methods are called, not at construction time
+    // This allows the app to build without Slack configured
+  }
+
+  private validateCredentials() {
     if (!this.clientId || !this.clientSecret) {
       throw new Error("SLACK_CLIENT_ID and SLACK_CLIENT_SECRET must be set");
     }
@@ -142,6 +147,7 @@ export class SlackClient {
   // }
 
   async getChannels(accessToken: string): Promise<SlackChannel[]> {
+    this.validateCredentials();
     const decryptedToken = decryptSlackToken(accessToken);
     if (!decryptedToken) {
       throw new Error("Missing Slack access token");
@@ -200,6 +206,7 @@ export class SlackClient {
     accessToken: string,
     message: SlackMessage,
   ): Promise<{ ok: boolean; ts?: string; error?: string }> {
+    this.validateCredentials();
     const decryptedToken = decryptSlackToken(accessToken);
     if (!decryptedToken) {
       throw new Error("Missing Slack access token");
