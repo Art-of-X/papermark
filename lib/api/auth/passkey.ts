@@ -11,6 +11,10 @@ export async function startServerPasskeyRegistration({
 }) {
   if (!session) throw new Error("Not logged in");
 
+  if (!hanko) {
+    throw new Error("Passkey service is not configured");
+  }
+
   const sessionUser = session.user as CustomUser;
 
   const user = await prisma.user.findUnique({
@@ -36,6 +40,10 @@ export async function finishServerPasskeyRegistration({
   session: Session;
 }) {
   if (!session) throw new Error("Not logged in");
+
+  if (!hanko) {
+    throw new Error("Passkey service is not configured");
+  }
 
   await hanko.registration.finalize(credential);
 
