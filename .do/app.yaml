@@ -66,7 +66,7 @@ jobs:
     repo: art-of-x/papermark
     branch: main
   environment_slug: node-js
-  run_command: npx prisma migrate deploy
+  run_command: npx prisma db push --accept-data-loss
   envs:
   - key: DATABASE_URL
     value: ${papermark-db.DATABASE_URL}
